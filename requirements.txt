@@ -1,0 +1,8 @@
+-e git+https://github.com/Rapptz/discord.py@rewrite#egg=discord.py
+aiohttp
+websockets
+chardet
+discord
+psutil
+asyncio
+async_timeout
