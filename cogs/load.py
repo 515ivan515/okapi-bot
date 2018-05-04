@@ -14,7 +14,7 @@ class LoadCog:
     @commands.command(name='load', hidden=True)
     @commands.is_owner()
     async def cog_load(self, ctx, *, cog: str):
-        def load(cog):
+        if cog.startswith('cogs.'):
             if cog == 'cogs.all':
                 try:
                     for self.all_cogs in range(len(cog)):
@@ -30,11 +30,23 @@ class LoadCog:
                     await ctx.send(f'**`ERROR:`** {type(e).__name__} - {e}')
                 else:
                     await ctx.send('**`SUCCESS!!!`**')
-        if cog.startswith('cogs.'):
-            load(cog)
         else:
             cog = self.prefix_cogs + cog
-            load(cog)
+            if cog == 'cogs.all':
+                try:
+                    for self.all_cogs in range(len(cog)):
+                        self.bot.load_extension(cog)
+                except Exception as e:
+                    await ctx.send(f'**`ERROR:`** {type(e).__name__} - {e}')
+                else:
+                    await ctx.send('**`SUCCESS!!!`**')
+            else:
+                try:
+                    self.bot.load_extension(cog)
+                except Exception as e:
+                    await ctx.send(f'**`ERROR:`** {type(e).__name__} - {e}')
+                else:
+                    await ctx.send('**`SUCCESS!!!`**')
 
 #--------------------
 #  ..unload
@@ -42,7 +54,8 @@ class LoadCog:
     @commands.command(name='unload', hidden=True)
     @commands.is_owner()
     async def cog_unload(self, ctx, *, cog: str):
-        def unload(cog):
+
+        if cog.startswith('cogs.'):
             if cog == 'cogs.all':
                 try:
                     for cog in self.all_cogs:
@@ -58,11 +71,23 @@ class LoadCog:
                     await ctx.send(f'**`ERROR:`** {type(e).__name__} - {e}')
                 else:
                     await ctx.send('**`SUCCESS!!!`**')
-        if cog.startswith('cogs.'):
-            unload(cog)
         else:
             cog = self.prefix_cogs + cog
-            unload(cog)
+            if cog == 'cogs.all':
+                try:
+                    for cog in self.all_cogs:
+                        self.bot.unload_extension(cog)
+                except Exception as e:
+                    await ctx.send(f'**`ERROR:`** {type(e).__name__} - {e}')
+                else:
+                    await ctx.send('**`SUCCESS!!!`**')
+            else:
+                try:
+                    self.bot.unload_extension(cog)
+                except Exception as e:
+                    await ctx.send(f'**`ERROR:`** {type(e).__name__} - {e}')
+                else:
+                    await ctx.send('**`SUCCESS!!!`**')
 
 #--------------------
 #  ..reload
@@ -70,7 +95,8 @@ class LoadCog:
     @commands.command(name='reload', hidden=True)
     @commands.is_owner()
     async def cog_reload(self, ctx, *, cog: str):
-        def reload(cog):
+
+        if cog.startswith('cogs.'):
             if cog == 'cogs.all':
                 try:
                     for cog in self.all_cogs:
@@ -88,11 +114,25 @@ class LoadCog:
                     await ctx.send(f'**`ERROR:`** {type(e).__name__} - {e}')
                 else:
                     await ctx.send('**`SUCCESS!!!`**')
-        if cog.startswith('cogs.'):
-            reload(cog)
         else:
             cog = self.prefix_cogs + cog
-            reload(cog)
+            if cog == 'cogs.all':
+                try:
+                    for cog in self.all_cogs:
+                        self.bot.unload_extension(cog)
+                        self.bot.load_extension(cog)
+                except Exception as e:
+                    await ctx.send(f'**`ERROR:`** {type(e).__name__} - {e}')
+                else:
+                    await ctx.send('**`SUCCESS!!!`**')
+            else:
+                try:
+                    self.bot.unload_extension(cog)
+                    self.bot.load_extension(cog)
+                except Exception as e:
+                    await ctx.send(f'**`ERROR:`** {type(e).__name__} - {e}')
+                else:
+                    await ctx.send('**`SUCCESS!!!`**')
 
 def setup(bot):
     bot.add_cog(LoadCog(bot))
