@@ -1,70 +1,98 @@
 from discord.ext import commands
-all_cogs = ['cogs.members', 'cogs.load', 'cogs.simple']
+all_cogs = ['cogs.perms', 'cogs.load', 'cogs.simple']
+prefix_cogs = 'cogs.'
 class LoadCog:
 
     def __init__(self, bot):
         self.bot = bot
         self.all_cogs = all_cogs
+        self.prefix_cogs = prefix_cogs
 
+#--------------------
+#  ..load
+#--------------------
     @commands.command(name='load', hidden=True)
     @commands.is_owner()
     async def cog_load(self, ctx, *, cog: str):
-        if cog == 'all':
-            try:
-                for self.all_cogs in range(len(cog)):
+        def load(cog):
+            if cog == 'cogs.all':
+                try:
+                    for self.all_cogs in range(len(cog)):
+                        self.bot.load_extension(cog)
+                except Exception as e:
+                    await ctx.send(f'**`ERROR:`** {type(e).__name__} - {e}')
+                else:
+                    await ctx.send('**`SUCCESS!!!`**')
+            else:
+                try:
                     self.bot.load_extension(cog)
-            except Exception as e:
-                await ctx.send(f'**`ERROR:`** {type(e).__name__} - {e}')
-            else:
-                await ctx.send('**`SUCCESS!!!`**')
+                except Exception as e:
+                    await ctx.send(f'**`ERROR:`** {type(e).__name__} - {e}')
+                else:
+                    await ctx.send('**`SUCCESS!!!`**')
+        if cog.startswith('cogs.'):
+            load(cog)
         else:
-            try:
-                self.bot.load_extension(cog)
-            except Exception as e:
-                await ctx.send(f'**`ERROR:`** {type(e).__name__} - {e}')
-            else:
-                await ctx.send('**`SUCCESS!!!`**')
+            cog = self.prefix_cogs + cog
+            load(cog)
 
+#--------------------
+#  ..unload
+#--------------------
     @commands.command(name='unload', hidden=True)
     @commands.is_owner()
     async def cog_unload(self, ctx, *, cog: str):
-        if cog == 'all':
-            try:
-                for cog in self.all_cogs:
+        def unload(cog):
+            if cog == 'cogs.all':
+                try:
+                    for cog in self.all_cogs:
+                        self.bot.unload_extension(cog)
+                except Exception as e:
+                    await ctx.send(f'**`ERROR:`** {type(e).__name__} - {e}')
+                else:
+                    await ctx.send('**`SUCCESS!!!`**')
+            else:
+                try:
                     self.bot.unload_extension(cog)
-            except Exception as e:
-                await ctx.send(f'**`ERROR:`** {type(e).__name__} - {e}')
-            else:
-                await ctx.send('**`SUCCESS!!!`**')
+                except Exception as e:
+                    await ctx.send(f'**`ERROR:`** {type(e).__name__} - {e}')
+                else:
+                    await ctx.send('**`SUCCESS!!!`**')
+        if cog.startswith('cogs.'):
+            unload(cog)
         else:
-            try:
-                self.bot.unload_extension(cog)
-            except Exception as e:
-                await ctx.send(f'**`ERROR:`** {type(e).__name__} - {e}')
-            else:
-                await ctx.send('**`SUCCESS!!!`**')
+            cog = self.prefix_cogs + cog
+            unload(cog)
 
+#--------------------
+#  ..reload
+#--------------------
     @commands.command(name='reload', hidden=True)
     @commands.is_owner()
     async def cog_reload(self, ctx, *, cog: str):
-        if cog == 'all':
-            try:
-                for cog in self.all_cogs:
+        def reload(cog):
+            if cog == 'cogs.all':
+                try:
+                    for cog in self.all_cogs:
+                        self.bot.unload_extension(cog)
+                        self.bot.load_extension(cog)
+                except Exception as e:
+                    await ctx.send(f'**`ERROR:`** {type(e).__name__} - {e}')
+                else:
+                    await ctx.send('**`SUCCESS!!!`**')
+            else:
+                try:
                     self.bot.unload_extension(cog)
                     self.bot.load_extension(cog)
-            except Exception as e:
-                await ctx.send(f'**`ERROR:`** {type(e).__name__} - {e}')
-            else:
-                await ctx.send('**`SUCCESS!!!`**')
+                except Exception as e:
+                    await ctx.send(f'**`ERROR:`** {type(e).__name__} - {e}')
+                else:
+                    await ctx.send('**`SUCCESS!!!`**')
+        if cog.startswith('cogs.'):
+            reload(cog)
         else:
-            try:
-                self.bot.unload_extension(cog)
-                self.bot.load_extension(cog)
-            except Exception as e:
-                await ctx.send(f'**`ERROR:`** {type(e).__name__} - {e}')
-            else:
-                await ctx.send('**`SUCCESS!!!`**')
-
+            cog = self.prefix_cogs + cog
+            reload(cog)
 
 def setup(bot):
     bot.add_cog(LoadCog(bot))
